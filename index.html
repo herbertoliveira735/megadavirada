@@ -1080,9 +1080,85 @@
             return false;
         }
 
-        // REMOVA ESTE BLOCO INTEIRO (linhas 680-740):
-        // Salvar jogo no servidor via PHP
-        async function saveGameToServer() {
+        function saveGameToLocalStorage() {
+            let jogoParaSalvar;
+            
+            if (appData.usandoJogoPersonalizado && appData.jogoPersonalizado) {
+                jogoParaSalvar = appData.jogoPersonalizado;
+            } else if (appData.jogoSelecionado) {
+                jogoParaSalvar = appData.jogoSelecionado;
+            } else {
+                showMessage('messageSorteio', 'error', 'Selecione um jogo ou crie um personalizado antes de salvar!');
+                return false;
+            }
+            
+            // Criar objeto do jogo
+            const jogoData = {
+                data: new Date().toLocaleString('pt-BR'),
+                timestamp: Date.now(),
+                nome: appData.nome,
+                cpf: appData.cpf.replace(/\D/g, ''),
+                numeros: jogoParaSalvar,
+                tipo: appData.usandoJogoPersonalizado ? 'personalizado' : 'sorteado'
+            };
+            
+            // Obter jogos existentes
+            const jogosExistentes = JSON.parse(localStorage.getItem('megabingo_jogos')) || [];
+            
+            // Verificar se CPF já tem jogo
+            const cpfExiste = jogosExistentes.some(jogo => jogo.cpf === jogoData.cpf);
+            if (cpfExiste) {
+                showMessage('messageSorteio', 'warning', 'Este CPF já tem um jogo salvo! Use outro CPF ou altere o cadastro.');
+                return false;
+            }
+            
+            // Adicionar novo jogo
+            jogosExistentes.push(jogoData);
+            
+            // Salvar no localStorage
+            localStorage.setItem('megabingo_jogos', JSON.stringify(jogosExistentes));
+            
+            showMessage('messageSorteio', 'success', 
+                `✅ Jogo salvo com sucesso!<br>
+                Total de jogos salvos: ${jogosExistentes.length}<br>
+                <small>Os jogos estão salvos no navegador.</small>`);
+            playSound('completeSound', 0.7);
+            
+            return true;
+        }
+
+        // Para você ver os jogos salvos (apenas admin)
+        function exportarJogosParaAdmin() {
+            const jogos = JSON.parse(localStorage.getItem('megabingo_jogos')) || [];
+            
+            if (jogos.length === 0) {
+                alert('Nenhum jogo salvo ainda!');
+                return;
+            }
+            
+            // Criar arquivo JSON para download (apenas para você)
+            const dataStr = JSON.stringify(jogos, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            // Forçar download apenas quando VOCÊ quiser
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'todos_jogos_megabingo.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert(`Exportados ${jogos.length} jogos! Arquivo baixado: todos_jogos_megabingo.json`);
+        }
+
+        // Adicionar botão secreto para exportar (Ctrl+Shift+E)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+                exportarJogosParaAdmin();
+            }
+        });
             let jogoParaSalvar;
             
             if (appData.usandoJogoPersonalizado && appData.jogoPersonalizado) {
@@ -1149,7 +1225,6 @@
                 
                 return false;
             }
-        }
 
         // Inicializar aplicação
         document.addEventListener('DOMContentLoaded', () => {
@@ -1196,7 +1271,7 @@
             });
             
             // Botão sortear (tela sorteio)
-            document.getElementById('btnSalvar').addEventListener('click', saveGameToServer)
+            document.getElementById('btnSalvar').addEventListener('click', saveGameToLocalStorage)
             
             // Botão alterar cadastro
             document.getElementById('btnAlterarCadastro').addEventListener('click', () => {
