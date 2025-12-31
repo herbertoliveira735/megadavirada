@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Bingo Premium 🎰</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00ffd5;
+            --secondary: #00aaff;
+            --accent: #ff00aa;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --light: #f0f8ff;
+            --card-bg: rgba(20, 25, 50, 0.8);
+            --glow: 0 0 20px rgba(0, 255, 213, 0.5);
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --error: #ff5555;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Montserrat', Arial, sans-serif;
+            background: var(--darker);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 100, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 150, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 213, 0.05) 0%, transparent 30%);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Partículas de fundo */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1000px;
+            padding: 20px;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Tela inicial */
+        .screen {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .screen.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            filter: drop-shadow(0 0 10px var(--primary));
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(1); filter: drop-shadow(0 0 10px var(--primary)); }
+            100% { transform: scale(1.1); filter: drop-shadow(0 0 20px var(--primary)); }
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0ff;
+            margin-bottom: 5px;
+        }
+
+        /* Formulário de cadastro */
+        .form-container {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 213, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(0, 255, 213, 0.3);
+            background: rgba(10, 15, 30, 0.7);
+            color: var(--light);
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 255, 213, 0.3);
+        }
+
+        .form-input.cpf {
+            letter-spacing: 1px;
+            font-family: monospace;
+        }
+
+        .form-hint {
+            font-size: 0.9rem;
+            color: #a0a0ff;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        /* Botões */
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: var(--dark);
+            border: none;
+            border-radius: 50px;
+            padding: 18px 40px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 
+                0 10px 20px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(0, 255, 213, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 25px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(0, 255, 213, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #666, #888);
+            margin-top: 15px;
+            font-size: 1.1rem;
+            padding: 15px 30px;
+        }
+
+        .btn-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Área de jogos */
+        .games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+
+        .game-card {
+            background: rgba(15, 20, 45, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 213, 0.2);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 255, 213, 0.3);
+        }
+
+        .game-card.selected {
+            border-color: var(--success);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+            background: rgba(15, 45, 30, 0.9);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .game-card.selected::before {
+            background: linear-gradient(90deg, var(--success), #00cc66);
+        }
+
+        .game-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .game-card.selected .game-title {
+            color: var(--success);
+        }
+
+        .select-badge {
+            background: var(--primary);
+            color: var(--dark);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        .game-card.selected .select-badge {
+            display: block;
+            background: var(--success);
+        }
+
+        .numbers-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .number-ball {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            background: radial-gradient(circle at 30% 30%, #fff, #a0e7ff);
+            color: #111;
+            box-shadow: 
+                inset 0 -5px 10px rgba(0, 0, 0, 0.2),
+                0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .game-card.selected .number-ball {
+            background: radial-gradient(circle at 30% 30%, #fff, #88ffbb);
+            box-shadow: 
+                inset 0 -5px 10px rgba(0, 0, 0, 0.2),
+                0 5px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .number-ball::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 20%;
+            height: 20%;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            filter: blur(1px);
+        }
+
+        /* Seção de jogo personalizado */
+        .custom-game-section {
+            background: rgba(15, 20, 45, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            border: 1px dashed rgba(0, 255, 213, 0.3);
+        }
+
+        .custom-game-title {
+            color: var(--warning);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .custom-numbers-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .number-input {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid rgba(0, 255, 213, 0.5);
+            background: rgba(10, 15, 30, 0.8);
+            color: var(--light);
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 255, 213, 0.5);
+            transform: scale(1.1);
+        }
+
+        .number-input.valid {
+            border-color: var(--success);
+            background: rgba(0, 40, 20, 0.8);
+        }
+
+        .number-input.invalid {
+            border-color: var(--error);
+            background: rgba(40, 0, 0, 0.8);
+        }
+
+        .input-hint {
+            text-align: center;
+            color: #a0a0ff;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Overlay de animação */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 20, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            flex-direction: column;
+        }
+
+        .overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .drawing-ball {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff, var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: #111;
+            box-shadow: 
+                0 0 60px var(--primary),
+                inset 0 -15px 30px rgba(0, 0, 0, 0.3);
+            animation: 
+                spin 1.5s linear infinite,
+                pulse-overlay 1.5s ease-in-out infinite alternate;
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .drawing-ball::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 25%;
+            height: 25%;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse-overlay {
+            0% { transform: scale(1) rotate(0); box-shadow: 0 0 60px var(--primary); }
+            100% { transform: scale(1.1) rotate(10deg); box-shadow: 0 0 100px var(--primary); }
+        }
+
+        .overlay-text {
+            font-size: 2rem;
+            color: var(--primary);
+            text-align: center;
+            margin-top: 20px;
+            text-shadow: 0 0 20px var(--primary);
+            animation: text-pulse 2s infinite alternate;
+        }
+
+        @keyframes text-pulse {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Mensagens */
+        .message {
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .message.success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--success);
+            display: flex;
+        }
+
+        .message.error {
+            background: rgba(255, 85, 85, 0.1);
+            border: 1px solid rgba(255, 85, 85, 0.3);
+            color: var(--error);
+            display: flex;
+        }
+
+        .message.warning {
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+            color: var(--warning);
+            display: flex;
+        }
+
+        .message-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Informações do usuário */
+        .user-info {
+            background: rgba(15, 20, 45, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--primary);
+        }
+
+        .user-info-text {
+            font-size: 1.2rem;
+        }
+
+        .user-info-text strong {
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #7070aa;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0, 255, 213, 0.1);
+        }
+
+        .warning {
+            color: var(--warning);
+            margin-top: 5px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .games-container { grid-template-columns: 1fr; }
+            .form-container { padding: 30px 20px; }
+            .btn { padding: 15px 30px; font-size: 1.1rem; }
+            .number-input { width: 60px; height: 60px; font-size: 1.3rem; }
+            .user-info { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .number-ball { width: 45px; height: 45px; font-size: 1.1rem; }
+            .number-input { width: 50px; height: 50px; font-size: 1.1rem; }
+            .drawing-ball { width: 140px; height: 140px; font-size: 3.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Partículas de fundo -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Overlay de animação -->
+    <div class="overlay" id="overlay">
+        <div class="drawing-ball" id="drawingBall">?</div>
+        <div class="overlay-text" id="overlayText">Sorteando números...</div>
+    </div>
+
+    <div class="container">
+        <!-- Tela 1: Cadastro -->
+        <div class="screen active" id="screenCadastro">
+            <div class="header">
+                <div class="logo">
+                    <i class="logo-icon fas fa-dice"></i>
+                    <h1>MEGA BINGO PREMIUM</h1>
+                    <i class="logo-icon fas fa-trophy"></i>
+                </div>
+                <p class="subtitle">Cadastre-se para participar do sorteio</p>
+            </div>
+
+            <div class="form-container">
+                <div class="form-group">
+                    <label class="form-label" for="nome">
+                        <i class="fas fa-user"></i> Nome Completo
+                    </label>
+                    <input type="text" id="nome" class="form-input" placeholder="Digite seu nome completo" maxlength="100">
+                    <div class="form-hint">Mínimo de 3 caracteres</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cpf">
+                        <i class="fas fa-id-card"></i> CPF
+                    </label>
+                    <input type="text" id="cpf" class="form-input cpf" placeholder="000.000.000-00" maxlength="14">
+                    <div class="form-hint">Digite apenas números, o sistema formatará automaticamente</div>
+                </div>
+
+                <div id="messageCadastro" class="message"></div>
+
+                <button class="btn" id="btnIniciar">
+                    <i class="btn-icon fas fa-play-circle"></i>
+                    <span>INICIAR SORTEIO</span>
+                </button>
+            </div>
+
+            <footer>
+                <p>Este é um simulador para entretenimento. Loterias são jogos de azar e resultados são totalmente aleatórios.</p>
+                <p class="warning">Jogue com responsabilidade. Não garantimos ganhos.</p>
+            </footer>
+        </div>
+
+        <!-- Tela 2: Sorteio e escolha -->
+        <div class="screen" id="screenSorteio">
+            <div class="header">
+                <div class="logo">
+                    <i class="logo-icon fas fa-dice"></i>
+                    <h1>SORTEIO DA MEGA-SENA</h1>
+                    <i class="logo-icon fas fa-trophy"></i>
+                </div>
+                <p class="subtitle">Escolha um dos jogos sorteados ou crie o seu próprio</p>
+            </div>
+
+            <div class="user-info">
+                <div class="user-info-text">
+                    <strong>Participante:</strong> <span id="userName">-</span> | 
+                    <strong>CPF:</strong> <span id="userCPF">-</span>
+                </div>
+                <button class="btn-secondary" id="btnAlterarCadastro">
+                    <i class="fas fa-user-edit"></i> Alterar Cadastro
+                </button>
+            </div>
+
+            <div class="form-container">
+                <div id="messageSorteio" class="message"></div>
+
+                <button class="btn" id="btnSortear">
+                    <i class="btn-icon fas fa-dice-d20"></i>
+                    <span>SORTEAR 5 JOGOS ALEATÓRIOS</span>
+                </button>
+
+                <div class="games-container" id="gamesContainer">
+                    <!-- Os jogos sorteados aparecerão aqui -->
+                </div>
+
+                <div class="custom-game-section">
+                    <h3 class="custom-game-title">
+                        <i class="fas fa-edit"></i> Ou crie seu próprio jogo
+                    </h3>
+                    <div class="custom-numbers-input" id="customNumbers">
+                        <!-- Inputs para números personalizados -->
+                    </div>
+                    <div class="input-hint">
+                        Digite 6 números distintos entre 1 e 60
+                    </div>
+                    <div id="messageCustom" class="message"></div>
+                </div>
+
+                <button class="btn" id="btnSalvar">
+                    <i class="btn-icon fas fa-save"></i>
+                    <span>SALVAR JOGO ESCOLHIDO</span>
+                </button>
+
+                <button class="btn-secondary" id="btnNovoSorteio">
+                    <i class="fas fa-redo"></i> Fazer Novo Sorteio
+                </button>
+            </div>
+
+            <footer>
+                <p id="downloadInfo" style="display: none;">
+                    <i class="fas fa-download"></i> Seu jogo foi salvo! O download do arquivo começará automaticamente.
+                </p>
+                <p class="warning">Lembre-se: cada CPF pode salvar apenas um jogo por sessão.</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Sons -->
+    <audio id="drawSound" src="https://assets.mixkit.co/sfx/preview/mixkit-slot-machine-spin-1075.mp3"></audio>
+    <audio id="ballSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3"></audio>
+    <audio id="completeSound" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3"></audio>
+    <audio id="selectSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3"></audio>
+
+    <script>
+        // Dados da aplicação
+        const appData = {
+            nome: '',
+            cpf: '',
+            jogosSorteados: [],
+            jogoSelecionado: null,
+            jogoPersonalizado: null,
+            usandoJogoPersonalizado: false
+        };
+
+        // Inicializar partículas de fundo
+        function initParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                const hue = Math.random() * 60 + 180;
+                particle.style.background = `hsl(${hue}, 100%, 70%)`;
+                particle.style.boxShadow = `0 0 10px hsl(${hue}, 100%, 70%)`;
+                
+                const delay = Math.random() * 15;
+                const duration = Math.random() * 10 + 15;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Formatar CPF
+        function formatCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            if (cpf.length > 3) cpf = cpf.substring(0, 3) + '.' + cpf.substring(3);
+            if (cpf.length > 7) cpf = cpf.substring(0, 7) + '.' + cpf.substring(7);
+            if (cpf.length > 11) cpf = cpf.substring(0, 11) + '-' + cpf.substring(11);
+            return cpf.substring(0, 14);
+        }
+
+        // Validar CPF
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            if (cpf.length !== 11) return false;
+            
+            // Verifica se todos os dígitos são iguais
+            if (/^(\d)\1+$/.test(cpf)) return false;
+            
+            // Validação dos dígitos verificadores
+            let soma = 0;
+            for (let i = 0; i < 9; i++) {
+                soma += parseInt(cpf.charAt(i)) * (10 - i);
+            }
+            let resto = soma % 11;
+            let digito1 = resto < 2 ? 0 : 11 - resto;
+            
+            if (digito1 !== parseInt(cpf.charAt(9))) return false;
+            
+            soma = 0;
+            for (let i = 0; i < 10; i++) {
+                soma += parseInt(cpf.charAt(i)) * (11 - i);
+            }
+            resto = soma % 11;
+            let digito2 = resto < 2 ? 0 : 11 - resto;
+            
+            return digito2 === parseInt(cpf.charAt(10));
+        }
+
+        // Mostrar mensagem
+        function showMessage(elementId, type, text) {
+            const element = document.getElementById(elementId);
+            element.className = `message ${type}`;
+            element.innerHTML = `
+                <i class="message-icon fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'exclamation-triangle'}"></i>
+                <span>${text}</span>
+            `;
+            element.style.display = 'flex';
+            
+            // Auto-esconder após 5 segundos (exceto para sucesso)
+            if (type !== 'success') {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Esconder mensagem
+        function hideMessage(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+        }
+
+        // Mudar de tela
+        function changeScreen(fromId, toId) {
+            document.getElementById(fromId).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(toId).classList.add('active');
+            }, 300);
+        }
+
+        // Gerar um jogo aleatório
+        function generateGame() {
+            const numbers = new Set();
+            while (numbers.size < 6) {
+                numbers.add(Math.floor(Math.random() * 60) + 1);
+            }
+            return Array.from(numbers).sort((a, b) => a - b);
+        }
+
+        // Reproduzir som
+        function playSound(soundId, volume = 0.7) {
+            const sound = document.getElementById(soundId);
+            sound.volume = volume;
+            sound.currentTime = 0;
+            sound.play().catch(e => console.log("Erro ao reproduzir som:", e));
+        }
+
+        // Mostrar animação de sorteio
+        function showDrawingAnimation() {
+            const overlay = document.getElementById('overlay');
+            const drawingBall = document.getElementById('drawingBall');
+            const overlayText = document.getElementById('overlayText');
+            
+            overlay.classList.add('active');
+            playSound('drawSound', 0.5);
+            
+            let counter = 0;
+            const numberInterval = setInterval(() => {
+                drawingBall.textContent = Math.floor(Math.random() * 60) + 1;
+                counter++;
+                
+                if (counter === 10) {
+                    overlayText.textContent = "Gerando jogos...";
+                }
+            }, 150);
+            
+            return { overlay, drawingBall, numberInterval };
+        }
+
+        // Criar uma bola numerada
+        function createNumberBall(number) {
+            const ball = document.createElement('div');
+            ball.className = 'number-ball';
+            ball.textContent = number.toString().padStart(2, '0');
+            return ball;
+        }
+
+        // Criar card de jogo
+        function createGameCard(gameNumber, numbers, isSelected = false) {
+            const card = document.createElement('div');
+            card.className = `game-card ${isSelected ? 'selected' : ''}`;
+            card.dataset.index = gameNumber - 1;
+            
+            const title = document.createElement('div');
+            title.className = 'game-title';
+            title.innerHTML = `
+                <span><i class="fas fa-ticket-alt"></i> JOGO ${gameNumber}</span>
+                <span class="select-badge"><i class="fas fa-check"></i> SELECIONADO</span>
+            `;
+            
+            const numbersContainer = document.createElement('div');
+            numbersContainer.className = 'numbers-container';
+            
+            numbers.forEach(num => {
+                numbersContainer.appendChild(createNumberBall(num));
+            });
+            
+            card.appendChild(title);
+            card.appendChild(numbersContainer);
+            
+            // Adicionar evento de clique
+            card.addEventListener('click', () => {
+                if (appData.usandoJogoPersonalizado) return;
+                
+                playSound('selectSound', 0.5);
+                selectGameCard(gameNumber - 1);
+            });
+            
+            return card;
+        }
+
+        // Selecionar card de jogo
+        function selectGameCard(index) {
+            // Desmarcar todos os cards
+            document.querySelectorAll('.game-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Marcar card selecionado
+            const selectedCard = document.querySelector(`.game-card[data-index="${index}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                appData.jogoSelecionado = appData.jogosSorteados[index];
+                appData.usandoJogoPersonalizado = false;
+                showMessage('messageSorteio', 'success', `Jogo ${index + 1} selecionado com sucesso!`);
+            }
+        }
+
+        // Sortear jogos
+        function drawGames() {
+            const startTime = performance.now();
+            
+            // Mostrar animação
+            const { overlay, drawingBall, numberInterval } = showDrawingAnimation();
+            
+            // Gerar jogos após a animação
+            setTimeout(() => {
+                clearInterval(numberInterval);
+                
+                const finalNumber = Math.floor(Math.random() * 60) + 1;
+                drawingBall.textContent = finalNumber.toString().padStart(2, '0');
+                
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                    
+                    // Gerar 5 jogos
+                    appData.jogosSorteados = [];
+                    for (let i = 0; i < 5; i++) {
+                        appData.jogosSorteados.push(generateGame());
+                    }
+                    
+                    // Exibir jogos
+                    const container = document.getElementById('gamesContainer');
+                    container.innerHTML = '';
+                    
+                    appData.jogosSorteados.forEach((game, idx) => {
+                        const card = createGameCard(idx + 1, game);
+                        container.appendChild(card);
+                    });
+                    
+                    // Selecionar o primeiro jogo por padrão
+                    setTimeout(() => {
+                        selectGameCard(0);
+                        playSound('completeSound', 0.5);
+                        
+                        // Mostrar mensagem
+                        showMessage('messageSorteio', 'success', '5 jogos sorteados! Selecione um ou crie seu próprio jogo.');
+                    }, 500);
+                    
+                }, 1000);
+                
+            }, 2500);
+        }
+
+        // Criar inputs para jogo personalizado
+        function createCustomNumberInputs() {
+            const container = document.getElementById('customNumbers');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 6; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'number-input';
+                input.placeholder = '00';
+                input.min = '1';
+                input.max = '60';
+                input.dataset.index = i;
+                
+                input.addEventListener('input', (e) => {
+                    validateCustomNumberInput(e.target);
+                    checkCustomGame();
+                });
+                
+                input.addEventListener('focus', (e) => {
+                    e.target.select();
+                });
+                
+                container.appendChild(input);
+            }
+        }
+
+        // Validar input de número personalizado
+        function validateCustomNumberInput(input) {
+            const value = parseInt(input.value);
+            input.classList.remove('valid', 'invalid');
+            
+            if (!input.value) {
+                return false;
+            }
+            
+            if (isNaN(value) || value < 1 || value > 60) {
+                input.classList.add('invalid');
+                return false;
+            }
+            
+            // Verificar duplicatas
+            const inputs = document.querySelectorAll('.number-input');
+            let isDuplicate = false;
+            
+            inputs.forEach(otherInput => {
+                if (otherInput !== input && otherInput.value && parseInt(otherInput.value) === value) {
+                    isDuplicate = true;
+                }
+            });
+            
+            if (isDuplicate) {
+                input.classList.add('invalid');
+                showMessage('messageCustom', 'error', 'Números não podem se repetir!');
+                return false;
+            }
+            
+            input.classList.add('valid');
+            hideMessage('messageCustom');
+            return true;
+        }
+
+        // Verificar jogo personalizado completo
+        function checkCustomGame() {
+            const inputs = document.querySelectorAll('.number-input');
+            const numbers = [];
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!validateCustomNumberInput(input)) {
+                    isValid = false;
+                } else {
+                    numbers.push(parseInt(input.value));
+                }
+            });
+            
+            if (isValid && numbers.length === 6) {
+                numbers.sort((a, b) => a - b);
+                appData.jogoPersonalizado = numbers;
+                appData.usandoJogoPersonalizado = true;
+                
+                // Desmarcar cards sorteados
+                document.querySelectorAll('.game-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                showMessage('messageCustom', 'success', 'Jogo personalizado válido! Clique em SALVAR para confirmar.');
+                return true;
+            }
+            
+            appData.jogoPersonalizado = null;
+            return false;
+        }
+
+        // REMOVA ESTE BLOCO INTEIRO (linhas 680-740):
+        // Salvar jogo no servidor via PHP
+        async function saveGameToServer() {
+            let jogoParaSalvar;
+            
+            if (appData.usandoJogoPersonalizado && appData.jogoPersonalizado) {
+                jogoParaSalvar = appData.jogoPersonalizado;
+            } else if (appData.jogoSelecionado) {
+                jogoParaSalvar = appData.jogoSelecionado;
+            } else {
+                showMessage('messageSorteio', 'error', 'Selecione um jogo ou crie um personalizado antes de salvar!');
+                return false;
+            }
+            
+            // Criar objeto do jogo
+            const jogoData = {
+                data: new Date().toLocaleString('pt-BR'),
+                timestamp: Date.now(),
+                nome: appData.nome,
+                cpf: appData.cpf,
+                numeros: jogoParaSalvar,
+                tipo: appData.usandoJogoPersonalizado ? 'personalizado' : 'sorteado'
+            };
+            
+            try {
+                showMessage('messageSorteio', 'warning', 'Salvando jogo no servidor...');
+                
+                // Enviar para o PHP
+                const response = await fetch('salvar_jogo.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(jogoData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('messageSorteio', 'success', 
+                        `✅ Jogo salvo com sucesso!<br>
+                        Arquivo: ${result.arquivo}<br>
+                        Os jogos estão sendo salvos na pasta "jogos" do site.`);
+                    playSound('completeSound', 0.7);
+                    return true;
+                } else {
+                    showMessage('messageSorteio', 'error', 'Erro ao salvar: ' + (result.error || 'Desconhecido'));
+                    return false;
+                }
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                showMessage('messageSorteio', 'error', 
+                    'Erro de conexão. O jogo foi salvo localmente como backup.<br>' +
+                    'Entre em contato com o administrador.');
+                
+                // Fallback: salvar localmente
+                const blob = new Blob([JSON.stringify(jogoData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `backup_jogo_${jogoData.cpf.replace(/\D/g, '')}_${jogoData.timestamp}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                return false;
+            }
+        }
+
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', () => {
+            initParticles();
+            createCustomNumberInputs();
+            
+            // Formatar CPF em tempo real
+            const cpfInput = document.getElementById('cpf');
+            cpfInput.addEventListener('input', (e) => {
+                e.target.value = formatCPF(e.target.value);
+            });
+            
+            // Botão iniciar (tela cadastro)
+            document.getElementById('btnIniciar').addEventListener('click', () => {
+                const nome = document.getElementById('nome').value.trim();
+                const cpf = document.getElementById('cpf').value;
+                
+                // Validar nome
+                if (nome.length < 3) {
+                    showMessage('messageCadastro', 'error', 'Nome deve ter pelo menos 3 caracteres!');
+                    return;
+                }
+                
+                // Validar CPF
+                const cpfNumeros = cpf.replace(/\D/g, '');
+                if (cpfNumeros.length !== 11 || !validarCPF(cpfNumeros)) {
+                    showMessage('messageCadastro', 'error', 'CPF inválido! Digite um CPF válido.');
+                    return;
+                }
+                
+                // Salvar dados
+                appData.nome = nome;
+                appData.cpf = formatCPF(cpfNumeros);
+                
+                // Atualizar informações na tela de sorteio
+                document.getElementById('userName').textContent = nome;
+                document.getElementById('userCPF').textContent = formatCPF(cpfNumeros);
+                
+                // Mudar para tela de sorteio
+                changeScreen('screenCadastro', 'screenSorteio');
+                
+                // Sortear jogos automaticamente
+                setTimeout(drawGames, 500);
+            });
+            
+            // Botão sortear (tela sorteio)
+            document.getElementById('btnSalvar').addEventListener('click', saveGameToServer)
+            
+            // Botão alterar cadastro
+            document.getElementById('btnAlterarCadastro').addEventListener('click', () => {
+                changeScreen('screenSorteio', 'screenCadastro');
+                document.getElementById('downloadInfo').style.display = 'none';
+            });
+            
+            // Botão novo sorteio
+            document.getElementById('btnNovoSorteio').addEventListener('click', () => {
+                document.getElementById('downloadInfo').style.display = 'none';
+                hideMessage('messageSorteio');
+                drawGames();
+            });
+            
+            // Permitir Enter no cadastro
+            document.getElementById('nome').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('btnIniciar').click();
+                }
+            });
+            
+            document.getElementById('cpf').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('btnIniciar').click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
