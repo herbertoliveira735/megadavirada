@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Bingo 🎰</title>
+    <title>Mega Virada 🎰</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -245,6 +245,14 @@
             margin-top: 15px;
             font-size: 1.1rem;
             padding: 15px 30px;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, var(--success), #00cc66);
+        }
+
+        .btn-info {
+            background: linear-gradient(45deg, #00aaff, #0066ff);
         }
 
         .btn-icon {
@@ -575,6 +583,141 @@
             color: var(--primary);
         }
 
+        /* Tela de sucesso */
+        .success-screen {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .success-icon {
+            font-size: 6rem;
+            color: var(--success);
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .success-message {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .game-details {
+            background: rgba(15, 20, 45, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+            border: 1px solid rgba(0, 255, 213, 0.2);
+        }
+        
+        .game-details h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-label {
+            color: #a0a0ff;
+        }
+        
+        .detail-value {
+            color: var(--light);
+            font-weight: bold;
+        }
+        
+        .numbers-display {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .success-ball {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff, var(--success));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #111;
+            font-size: 1.3rem;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .stats-panel {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            background: rgba(10, 15, 40, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 213, 0.1);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #a0a0ff;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* Footer */
         footer {
             text-align: center;
@@ -598,6 +741,8 @@
             .btn { padding: 15px 30px; font-size: 1.1rem; }
             .number-input { width: 60px; height: 60px; font-size: 1.3rem; }
             .user-info { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .action-buttons { flex-direction: column; }
+            .success-ball { width: 45px; height: 45px; font-size: 1.1rem; }
         }
 
         @media (max-width: 480px) {
@@ -605,6 +750,8 @@
             .number-ball { width: 45px; height: 45px; font-size: 1.1rem; }
             .number-input { width: 50px; height: 50px; font-size: 1.1rem; }
             .drawing-ball { width: 140px; height: 140px; font-size: 3.5rem; }
+            .success-icon { font-size: 4rem; }
+            .success-message { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -624,10 +771,10 @@
             <div class="header">
                 <div class="logo">
                     <i class="logo-icon fas fa-dice"></i>
-                    <h1>MEGA BINGO PREMIUM</h1>
+                    <h1>MEGA VIRADA</h1>
                     <i class="logo-icon fas fa-trophy"></i>
                 </div>
-                <p class="subtitle">Cadastre-se para participar do sorteio</p>
+                <p class="subtitle">DEV TEAM - MARILIA - BAURU - Cadastre-se para participar do sorteio</p>
             </div>
 
             <div class="form-container">
@@ -656,8 +803,8 @@
             </div>
 
             <footer>
-                <p>Este é um simulador para entretenimento. Loterias são jogos de azar e resultados são totalmente aleatórios.</p>
-                <p class="warning">Jogue com responsabilidade. Não garantimos ganhos.</p>
+                <p>Dev by Herbert.</p>
+                <p class="warning">Aposte sóbrio 🍺.</p>
             </footer>
         </div>
 
@@ -718,19 +865,61 @@
             </div>
 
             <footer>
-                <p id="downloadInfo" style="display: none;">
-                    <i class="fas fa-download"></i> Seu jogo foi salvo! O download do arquivo começará automaticamente.
-                </p>
                 <p class="warning">Lembre-se: cada CPF pode salvar apenas um jogo por sessão.</p>
             </footer>
+        </div>
+
+        <!-- Tela 3: Sucesso -->
+        <div class="screen" id="screenSucesso">
+            <div class="header">
+                <div class="logo">
+                    <i class="logo-icon fas fa-check-circle"></i>
+                    <h1>JOGO SALVO COM SUCESSO!</h1>
+                    <i class="logo-icon fas fa-trophy"></i>
+                </div>
+                <p class="subtitle">Seu jogo foi registrado na planilha oficial</p>
+            </div>
+
+            <div class="form-container">
+                <div class="success-screen">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    
+                    <div class="success-message">
+                        ✅ JOGO SALVO COM SUCESSO!
+                    </div>
+                    
+                    <div class="game-details" id="gameDetails">
+                        <!-- Detalhes do jogo serão preenchidos aqui -->
+                    </div>
+                    
+                    <div class="stats-panel">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalJogos">0</div>
+                            <div class="stat-label">Total de Jogos</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="tempoSalvo">0s</div>
+                            <div class="stat-label">Tempo de Salvamento</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-success" id="btnNovoJogo">
+                            <i class="fas fa-plus-circle"></i> FAZER NOVO JOGO
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Sons -->
-    <audio id="drawSound" src="https://assets.mixkit.co/sfx/preview/mixkit-slot-machine-spin-1075.mp3"></audio>
-    <audio id="ballSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3"></audio>
-    <audio id="completeSound" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3"></audio>
-    <audio id="selectSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3"></audio>
+    <audio id="drawSound" src="https://www.myinstants.com/media/sounds/perguntashowdomilhao.mp3"></audio>
+    <audio id="ballSound" src="https://www.myinstants.com/media/sounds/minecraft_click.mp3"></audio>
+    <audio id="completeSound" src="https://www.myinstants.com/media/sounds/69_inWxWuv.mp3"></audio>
+    <audio id="selectSound" src="https://www.myinstants.com/media/sounds/mouse-click-sound.mp3"></audio>
 
     <script>
         // Dados da aplicação
@@ -742,6 +931,34 @@
             jogoPersonalizado: null,
             usandoJogoPersonalizado: false
         };
+
+             function setSavingState(isSaving) {
+                const btn = document.getElementById('btnSalvar');
+
+                if (isSaving) {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.7';
+                    btn.innerHTML = `
+                        <div class="spinner"></div>
+                        <span>AGUARDANDO...</span>
+                    `;
+                } else {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.innerHTML = `
+                        <i class="btn-icon fas fa-save"></i>
+                        <span>SALVAR JOGO ESCOLHIDO</span>
+                    `;
+                }
+            }       
+
+        // URL FIXA DA API (já configurada para sua planilha)
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwu06iaFjHB9wY2cqoc1Let71dPZfMLWcMx0QsQ6zS-6xT3Ykgo2-8HQbpIUlMOqDhB/exec';
+        const PLANILHA_URL = 'https://docs.google.com/spreadsheets/d/1OBthBry91iVVkDDMXUAKg-zIbvCbdMsw-jtVcxyHruk/edit';
+        
+        // Contadores
+        let totalJogosSalvos = 0;
+        let startTime = 0;
 
         // Inicializar partículas de fundo
         function initParticles() {
@@ -1080,151 +1297,125 @@
             return false;
         }
 
-        function saveGameToLocalStorage() {
-            let jogoParaSalvar;
-            
-            if (appData.usandoJogoPersonalizado && appData.jogoPersonalizado) {
-                jogoParaSalvar = appData.jogoPersonalizado;
-            } else if (appData.jogoSelecionado) {
-                jogoParaSalvar = appData.jogoSelecionado;
-            } else {
-                showMessage('messageSorteio', 'error', 'Selecione um jogo ou crie um personalizado antes de salvar!');
-                return false;
-            }
-            
-            // Criar objeto do jogo
-            const jogoData = {
-                data: new Date().toLocaleString('pt-BR'),
-                timestamp: Date.now(),
+        async function saveGameToGoogleSheets() {
+            try {
+
+                if (document.getElementById('btnSalvar').disabled) return;
+                setSavingState(true);
+
+                let numeros = null;
+                let tipo = '';
+
+                if (appData.usandoJogoPersonalizado && appData.jogoPersonalizado) {
+                numeros = appData.jogoPersonalizado;
+                tipo = 'personalizado';
+                } else if (appData.jogoSelecionado) {
+                numeros = appData.jogoSelecionado;
+                tipo = 'sorteado';
+                } else {
+                showMessage('messageSorteio', 'error', 'Selecione um jogo antes de salvar!');
+                return;
+                }
+
+                // 🔹 CRIAR O OBJETO jogoData (ANTES NÃO EXISTIA)
+                const jogoData = {
                 nome: appData.nome,
                 cpf: appData.cpf.replace(/\D/g, ''),
-                numeros: jogoParaSalvar,
-                tipo: appData.usandoJogoPersonalizado ? 'personalizado' : 'sorteado'
-            };
-            
-            // Obter jogos existentes
-            const jogosExistentes = JSON.parse(localStorage.getItem('megabingo_jogos')) || [];
-            
-            // Verificar se CPF já tem jogo
-            const cpfExiste = jogosExistentes.some(jogo => jogo.cpf === jogoData.cpf);
-            if (cpfExiste) {
-                showMessage('messageSorteio', 'warning', 'Este CPF já tem um jogo salvo! Use outro CPF ou altere o cadastro.');
-                return false;
-            }
-            
-            // Adicionar novo jogo
-            jogosExistentes.push(jogoData);
-            
-            // Salvar no localStorage
-            localStorage.setItem('megabingo_jogos', JSON.stringify(jogosExistentes));
-            
-            showMessage('messageSorteio', 'success', 
-                `✅ Jogo salvo com sucesso!<br>
-                Total de jogos salvos: ${jogosExistentes.length}<br>
-                <small>Os jogos estão salvos no navegador.</small>`);
-            playSound('completeSound', 0.7);
-            
-            return true;
-        }
+                numeros: numeros,
+                tipo: tipo
+                };
 
-        // Para você ver os jogos salvos (apenas admin)
-        function exportarJogosParaAdmin() {
-            const jogos = JSON.parse(localStorage.getItem('megabingo_jogos')) || [];
-            
-            if (jogos.length === 0) {
-                alert('Nenhum jogo salvo ainda!');
-                return;
-            }
-            
-            // Criar arquivo JSON para download (apenas para você)
-            const dataStr = JSON.stringify(jogos, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            
-            // Forçar download apenas quando VOCÊ quiser
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'todos_jogos_megabingo.json';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-            alert(`Exportados ${jogos.length} jogos! Arquivo baixado: todos_jogos_megabingo.json`);
-        }
+                const start = performance.now();
 
-        // Adicionar botão secreto para exportar (Ctrl+Shift+E)
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.shiftKey && e.key === 'E') {
-                exportarJogosParaAdmin();
-            }
-        });
-            let jogoParaSalvar;
-            
-            if (appData.usandoJogoPersonalizado && appData.jogoPersonalizado) {
-                jogoParaSalvar = appData.jogoPersonalizado;
-            } else if (appData.jogoSelecionado) {
-                jogoParaSalvar = appData.jogoSelecionado;
-            } else {
-                showMessage('messageSorteio', 'error', 'Selecione um jogo ou crie um personalizado antes de salvar!');
-                return false;
-            }
-            
-            // Criar objeto do jogo
-            const jogoData = {
-                data: new Date().toLocaleString('pt-BR'),
-                timestamp: Date.now(),
-                nome: appData.nome,
-                cpf: appData.cpf,
-                numeros: jogoParaSalvar,
-                tipo: appData.usandoJogoPersonalizado ? 'personalizado' : 'sorteado'
-            };
-            
-            try {
-                showMessage('messageSorteio', 'warning', 'Salvando jogo no servidor...');
-                
-                // Enviar para o PHP
-                const response = await fetch('salvar_jogo.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(jogoData)
+                const formData = new URLSearchParams();
+                formData.append('nome', jogoData.nome);
+                formData.append('cpf', jogoData.cpf);
+                formData.append('numeros', JSON.stringify(jogoData.numeros));
+                formData.append('tipo', jogoData.tipo);
+
+                const response = await fetch(GOOGLE_SHEETS_URL, {
+                method: 'POST',
+                body: formData
                 });
-                
+
                 const result = await response.json();
-                
-                if (result.success) {
-                    showMessage('messageSorteio', 'success', 
-                        `✅ Jogo salvo com sucesso!<br>
-                        Arquivo: ${result.arquivo}<br>
-                        Os jogos estão sendo salvos na pasta "jogos" do site.`);
-                    playSound('completeSound', 0.7);
-                    return true;
-                } else {
-                    showMessage('messageSorteio', 'error', 'Erro ao salvar: ' + (result.error || 'Desconhecido'));
-                    return false;
+
+                if (!result.success) {
+                throw new Error(result.error || 'Erro ao salvar');
                 }
-                
+
+                const tempoSalvo = ((performance.now() - start) / 1000).toFixed(2);
+
+                totalJogosSalvos++;
+
+                saveLocalBackup(jogoData);
+                showSuccessScreen(jogoData, result, tempoSalvo);
+
             } catch (error) {
-                console.error('Erro:', error);
-                showMessage('messageSorteio', 'error', 
-                    'Erro de conexão. O jogo foi salvo localmente como backup.<br>' +
-                    'Entre em contato com o administrador.');
-                
-                // Fallback: salvar localmente
-                const blob = new Blob([JSON.stringify(jogoData, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `backup_jogo_${jogoData.cpf.replace(/\D/g, '')}_${jogoData.timestamp}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                return false;
+                console.error(error);
+                showMessage('messageSorteio', 'error', 'Erro ao salvar na planilha!');
             }
+            }
+
+        // Backup local
+        function saveLocalBackup(jogoData) {
+            try {
+                const backups = JSON.parse(localStorage.getItem('megabingo_backups')) || [];
+                jogoData._timestamp = new Date().toISOString();
+                backups.push(jogoData);
+                localStorage.setItem('megabingo_backups', JSON.stringify(backups));
+                
+                console.log('Backup local salvo. Total:', backups.length);
+            } catch (e) {
+                console.error('Erro ao salvar backup local:', e);
+            }
+        }
+
+        // Mostrar tela de sucesso
+        function showSuccessScreen(jogoData, result, tempoSalvo) {
+            // Atualizar contadores
+            document.getElementById('totalJogos').textContent = totalJogosSalvos;
+            document.getElementById('tempoSalvo').textContent = `${tempoSalvo}s`;
+            
+            // Criar detalhes do jogo
+            const numerosHTML = jogoData.numeros.map(num => 
+                `<div class="success-ball">${num.toString().padStart(2, '0')}</div>`
+            ).join('');
+            
+            document.getElementById('gameDetails').innerHTML = `
+                <h3>📋 DETALHES DO JOGO</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Nome:</span>
+                    <span class="detail-value">${jogoData.nome}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">CPF:</span>
+                    <span class="detail-value">${formatCPF(jogoData.cpf)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Tipo:</span>
+                    <span class="detail-value">${jogoData.tipo === 'personalizado' ? 'Personalizado' : 'Sorteado'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Números:</span>
+                    <span class="detail-value"></span>
+                </div>
+                <div class="numbers-display">
+                    ${numerosHTML}
+                </div>
+                <div class="detail-row" style="margin-top: 15px;">
+                    <span class="detail-label">Data/Hora:</span>
+                    <span class="detail-value">${new Date().toLocaleString('pt-BR')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value" style="color: var(--success);">✅ Salvo na planilha</span>
+                </div>
+            `;
+            
+            // Mudar para tela de sucesso
+            changeScreen('screenSorteio', 'screenSucesso');
+        }
 
         // Inicializar aplicação
         document.addEventListener('DOMContentLoaded', () => {
@@ -1271,19 +1462,46 @@
             });
             
             // Botão sortear (tela sorteio)
-            document.getElementById('btnSalvar').addEventListener('click', saveGameToLocalStorage)
+            document.getElementById('btnSortear').addEventListener('click', drawGames);
+            
+            // Botão salvar (tela sorteio) - SALVA AUTOMATICAMENTE
+            document.getElementById('btnSalvar').addEventListener('click', saveGameToGoogleSheets);
             
             // Botão alterar cadastro
             document.getElementById('btnAlterarCadastro').addEventListener('click', () => {
                 changeScreen('screenSorteio', 'screenCadastro');
-                document.getElementById('downloadInfo').style.display = 'none';
             });
             
             // Botão novo sorteio
             document.getElementById('btnNovoSorteio').addEventListener('click', () => {
-                document.getElementById('downloadInfo').style.display = 'none';
                 hideMessage('messageSorteio');
                 drawGames();
+            });
+            
+            // Botão novo jogo (tela sucesso)
+            document.getElementById('btnNovoJogo').addEventListener('click', () => {
+                // Resetar dados
+                appData.jogoSelecionado = null;
+                appData.jogoPersonalizado = null;
+                appData.usandoJogoPersonalizado = false;
+                
+                // Resetar inputs personalizados
+                document.querySelectorAll('.number-input').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('valid', 'invalid');
+                });
+                
+                // Voltar para cadastro
+                changeScreen('screenSucesso', 'screenCadastro');
+                
+                // Limpar campos de cadastro
+                document.getElementById('nome').value = '';
+                document.getElementById('cpf').value = '';
+            });
+            
+            // Botão ver planilha
+            document.getElementById('btnVerPlanilha').addEventListener('click', () => {
+                window.open(PLANILHA_URL, '_blank');
             });
             
             // Permitir Enter no cadastro
@@ -1298,6 +1516,19 @@
                     document.getElementById('btnIniciar').click();
                 }
             });
+            
+            // Tentar enviar backups pendentes
+            setTimeout(() => {
+                try {
+                    const backups = JSON.parse(localStorage.getItem('megabingo_backups')) || [];
+                    if (backups.length > 0) {
+                        console.log(`Enviando ${backups.length} backups pendentes...`);
+                        // Aqui você pode implementar o envio dos backups quando a conexão voltar
+                    }
+                } catch (e) {
+                    console.error('Erro ao processar backups:', e);
+                }
+            }, 3000);
         });
     </script>
 </body>
